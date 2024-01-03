@@ -1,0 +1,24 @@
+@model EditMemberViewModel
+@{
+    ViewData["Title"] = "Members";
+}
+
+<div class="row">
+    <input type="hidden" asp-for="Id" value="@Model.Id">
+
+    <label asp-for="Name">Full name</label>
+    <input asp-for="Name" value="@Model.Name">
+
+    <label asp-for="PhoneNumber">Phone number</label>
+    <input asp-for="PhoneNumber" value="@Model.PhoneNumber">
+
+    <label asp-for="Email">E-mail address</label>
+    <input asp-for="Email" value="@Model.Email">
+
+    <label asp-for="Section">Section</label>
+    <input asp-for="Section" value="@Model.Section">
+
+    <label asp-for="Roles">Roles</label>
+    <input asp-for="Roles" value="@Model.Section">
+</div>
+
