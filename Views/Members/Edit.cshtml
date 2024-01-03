@@ -4,21 +4,27 @@
 }
 
 <div class="row">
-    <input type="hidden" asp-for="Id" value="@Model.Id">
+    <form asp-controller="Members" asp-action="Edit" method="POST">
+        <input type="hidden" asp-for="Id" value="@Model.Id">
 
-    <label asp-for="Name">Full name</label>
-    <input asp-for="Name" value="@Model.Name">
+        <label class="form-label" asp-for="Name">Full name</label>
+        <input class="form-input" asp-for="Name" value="@Model.Name">
 
-    <label asp-for="PhoneNumber">Phone number</label>
-    <input asp-for="PhoneNumber" value="@Model.PhoneNumber">
+        <label class="form-label" asp-for="PhoneNumber">Phone number</label>
+        <input class="form-input" asp-for="PhoneNumber" value="@Model.PhoneNumber">
 
-    <label asp-for="Email">E-mail address</label>
-    <input asp-for="Email" value="@Model.Email">
+        <label class="form-label" asp-for="Email">E-mail address</label>
+        <input class="form-input" asp-for="Email" value="@Model.Email">
 
-    <label asp-for="Section">Section</label>
-    <input asp-for="Section" value="@Model.Section">
+        <label class="form-label" asp-for="Section">Section</label>
+        <input class="form-input" asp-for="Section" value="@Model.Section">
 
-    <label asp-for="Roles">Roles</label>
-    <input asp-for="Roles" value="@Model.Section">
+        <label class="form-label">Roles</label>
+        <input class="form-input" asp-for="SingerRole" value="@Model.SingerRole">
+        <input class="form-input" asp-for="CouncilRole" value="@Model.CouncilRole">
+        <input class="form-input" asp-for="ConductorRole" value="@Model.ConductorRole">
+
+        <button class="btn btn-primary" type="submit">Edit</button>
+    </form>
 </div>
 
