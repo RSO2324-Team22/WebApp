@@ -1,4 +1,4 @@
-namespace WebApp.Models;
+namespace WebApp.Members;
 
 public class EditMemberViewModel {
     public required int Id { get; set; }

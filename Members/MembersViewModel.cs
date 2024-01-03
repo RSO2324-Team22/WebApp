@@ -1,4 +1,4 @@
-namespace WebApp.Models;
+namespace WebApp.Members;
 
 public class MembersViewModel {
     public IEnumerable<Member> Members { get; set; } = new List<Member>();
