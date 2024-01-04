@@ -1,0 +1,46 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebApp.Rehearsals.Views
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Rehearsals";
+}
+
+<h1>Table of Rehearsals</h1>
+
+<p>
+    <a asp-action="NewRehearsal">Create New</a>
+</p>
+<div class="row">
+    <table class="table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Location latitude</th>
+            <th>Location longitude</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach(RehearsalViewModel.Rehearsal rehearsal in Model.Rehearsals) {
+            <tr>
+                <td><a class="nav-link" asp-area="" asp-controller="Rehearsals" asp-action="EditRehearsal" asp-route-id="@rehearsal.Id">@rehearsal.Title</a></td>
+                <td>@rehearsal.Location.Latitude</td>
+                <td>@rehearsal.Location.Longitude</td>
+                <td>@rehearsal.StartTime</td>
+                <td>@rehearsal.EndTime</td>
+                <td>@rehearsal.Notes</td>
+                <td>@rehearsal.Status</td>
+                <td>@rehearsal.Type</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

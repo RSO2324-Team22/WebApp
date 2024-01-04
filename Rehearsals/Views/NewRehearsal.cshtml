@@ -1,0 +1,56 @@
+@model WebApp.Rehearsals.Models.CreateRehearsalViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Add";
+}
+<h1>Add new</h1>
+
+<h4>Rehearsal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Rehearsals" asp-action="NewRehearsal" method="POST">
+            <div class="form-group">
+                <label class="form-label" asp-for="Title">Title</label>
+                <input class="form-input" asp-for="Title"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Location.Latitude">Location latitude</label>
+                <input class="form-input" asp-for="Location.Latitude"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Location.Longitude">Location longitude</label>
+                <input class="form-input" asp-for="Location.Longitude"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="StartTime">Start time</label>
+                <input class="form-input" type="datetime-local" asp-for="StartTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="EndTime">End time</label>
+                <input class="form-input" type="datetime-local" asp-for="EndTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Notes">Notes</label>
+                <input class="form-input" asp-for="Notes"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Status">Status</label>
+                <input class="form-input" asp-for="Status"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Type">Type</label>
+                <input class="form-input" asp-for="Type"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="RehearsalList">Back to List</a>
+</div>
