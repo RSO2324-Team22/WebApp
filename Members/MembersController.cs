@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Members.Models;
 
 namespace WebApp.Members;
 
 public class MembersController : Controller
 {
     private readonly object _logger;
-    private readonly MembersService _membersService;
+    private readonly IMembersService _membersService;
 
     public MembersController(
             ILogger<MembersController> logger,
-            MembersService membersService) {
+            IMembersService membersService) {
         this._logger = logger;
         this._membersService = membersService;
     }

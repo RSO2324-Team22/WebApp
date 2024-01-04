@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<MembersService>();
+builder.Services.AddScoped<IMembersService, MembersService>();
 
 builder.Services.Configure<RazorViewEngineOptions>(options => {
     options.ViewLocationExpanders.Add(new AppViewLocator());      

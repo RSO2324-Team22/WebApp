@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyApp.Namespace;
+namespace WebApp.Resources;
 
 public class ResourcesController : Controller
 {
