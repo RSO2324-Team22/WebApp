@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Razor;
 using WebApp;
+using WebApp.Concerts;
 using WebApp.Members;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMembersService, MembersService>();
+builder.Services.AddScoped<IConcertService, ConcertService>();
 
 builder.Services.Configure<RazorViewEngineOptions>(options => {
     options.ViewLocationExpanders.Add(new AppViewLocator());      
