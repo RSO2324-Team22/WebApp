@@ -20,20 +20,22 @@ public class MembersController : Controller
 
         MembersViewModel model = new MembersViewModel {
             Members = members.Select(m => new MembersViewModel.Member {
-                Id = m.Id, 
-                Name = m.Name, 
-                PhoneNumber = m.PhoneNumber, 
-                Email = m.Email, 
-                Section = m.Section.ToString(),
-                Roles = m.Roles.Select(r => r.ToString()) 
+                Id = m.id, 
+                Name = m.name, 
+                PhoneNumber = m.phoneNumber, 
+                Email = m.email, 
+                Section = m.section.ToString(),
+                Roles = m.roles.Select(r => r.ToString()) 
             }) 
         };
         return View(model);
     }
 
     [HttpGet]
-    public ActionResult New() {
-        return View();
+    public ActionResult New()
+    {
+        CreateMemberViewModel newMember = new CreateMemberViewModel();
+        return View(newMember);
     }
     
     [HttpPost]
@@ -51,13 +53,13 @@ public class MembersController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult> Edit(int id, EditMemberViewModel model) {
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,PhoneNumber,Email,Section,SingerRole,CouncilRole,ConductorRole")] EditMemberViewModel model) {
         Member member = model.ToMember();
         Member editedMember = await this._membersService.EditMemberAsync(member);
-        return View(EditMemberViewModel.FromMember(editedMember));
+        return RedirectToAction("Index");
     }
 
-    [HttpPost]
+    [HttpGet]
     public async Task<ActionResult> Delete(int id) {
         await this._membersService.DeleteMemberAsync(id); 
         return RedirectToAction("Index");

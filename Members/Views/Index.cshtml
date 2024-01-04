@@ -1,9 +1,15 @@
 @using WebApp.Members.Models
 @model MembersViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Members";
 }
 
+<h1>Table of choir members</h1>
+
+<p>
+    <a asp-action="New">Create New</a>
+</p>
 <div class="row">
     <table class="table-striped">
         <thead>
@@ -23,7 +29,7 @@
                 <td>@member.PhoneNumber</td>
                 <td>@member.Email</td>
                 <td>@member.Section</td>
-                <td>@String.Join(',', @member.Roles)</td>
+                <td>@String.Join(", ", @member.Roles)</td>
             </tr>
         }
         </tbody>

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using WebApp.Members.Models;
 
 namespace WebApp.Members;
 
@@ -7,7 +8,7 @@ public class MembersService : IMembersService
     private readonly ILogger<MembersService> _logger;
     private readonly HttpClient _httpClient;
     private readonly string? _serviceUrl;
-
+    private readonly JsonSerializerOptions _serializeOptions;
     public MembersService(
             ILogger<MembersService> logger,
             IConfiguration config)
@@ -15,6 +16,14 @@ public class MembersService : IMembersService
         this._logger = logger;
         this._httpClient = new HttpClient();
         this._serviceUrl = config["MEMBERS_SERVICE_URL"];
+        this._serializeOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Converters =
+            {
+                new EnumCollectionJsonValueConverter()
+            }
+        };
     }
 
     public async Task<List<Member>> GetMembersAsync()
@@ -74,15 +83,25 @@ public class MembersService : IMembersService
         string body;
         try
         {
-            JsonContent json = JsonContent.Create<Member>(member);
+            var editedMember = new NewMember
+            {
+                Name = member.name,
+                PhoneNumber = member.phoneNumber,
+                Email = member.email,
+                Section = member.section,
+                Roles = member.roles
+            };
+
+            JsonContent json = JsonContent.Create<NewMember>(editedMember, null, this._serializeOptions);
+            var neki = await json.ReadAsStringAsync();
             using HttpResponseMessage response =
-                await this._httpClient.PutAsync(this._serviceUrl + "/" + member.Id, json);
+                await this._httpClient.PutAsync(this._serviceUrl + "/" + member.id, json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError($"An error occured while fetching member Id {member.Id} \n" + e.Message);
+            this._logger.LogError($"An error occured while fetching member Id {member.id} \n" + e.Message);
             throw;
         }
 
@@ -92,7 +111,7 @@ public class MembersService : IMembersService
         }
         catch (Exception e)
         {
-            this._logger.LogError($"An error occured while deserializing member Id {member.Id} \n" + e.Message);
+            this._logger.LogError($"An error occured while deserializing member Id {member.id} \n" + e.Message);
             throw;
         }
     }
@@ -102,7 +121,7 @@ public class MembersService : IMembersService
         string body;
         try
         {
-            JsonContent json = JsonContent.Create<NewMember>(newMember);
+            JsonContent json = JsonContent.Create<NewMember>(newMember, null, this._serializeOptions);
             using HttpResponseMessage response =
                 await this._httpClient.PostAsync(this._serviceUrl, json);
             response.EnsureSuccessStatusCode();

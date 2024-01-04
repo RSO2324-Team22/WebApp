@@ -1,35 +1,52 @@
 @using WebApp.Members.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model EditMemberViewModel
 @{
-    ViewData["Title"] = "Members";
+    ViewData["Title"] = "Edit";
 }
+<h1>Edit</h1>
 
+<h4>Member</h4>
+<hr />
 <div class="row">
-    <form asp-controller="Members" asp-action="Edit" method="POST">
-        <input type="hidden" asp-for="Id" value="@Model.Id">
-
-        <label class="form-label" asp-for="Name">Full name</label>
-        <input class="form-input" asp-for="Name" value="@Model.Name">
-        <br/>
-        <label class="form-label" asp-for="PhoneNumber">Phone number</label>
-        <input class="form-input" asp-for="PhoneNumber" value="@Model.PhoneNumber">
-        <br/>
-        <label class="form-label" asp-for="Email">E-mail address</label>
-        <input class="form-input" asp-for="Email" value="@Model.Email">
-        <br/>
-        <label class="form-label" asp-for="Section">Section</label>
-        <input class="form-input" asp-for="Section" value="@Model.Section">
-        <br/>
-        <label class="form-label">Roles</label><br/>
-        <input class="form-input" asp-for="SingerRole" value="@Model.SingerRole">
-        <label>Singer><br/>    
-        <input class="form-input" asp-for="CouncilRole" value="@Model.CouncilRole">
-        <label>Council><br/>
-        <input class="form-input" asp-for="ConductorRole" value="@Model.ConductorRole">
-        <label>Conductor><br/>
-
-        <button class="btn btn-primary" type="submit">Edit</button>
-        <a class="btn btn-danger" asp-controller="Members" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
-    </form>
+    <div class="col-md-4">
+        <form asp-action="Edit" method="POST">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label class="control-label" asp-for="Name">Full name</label>
+                <input class="form-control" asp-for="Name" value="@Model.Name" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" asp-for="PhoneNumber">Phone number</label>
+                <input class="form-control" asp-for="PhoneNumber" value="@Model.PhoneNumber" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" asp-for="Email">E-mail address</label>
+                <input class="form-control" asp-for="Email" value="@Model.Email" />
+                </div>
+                <div class="form-group">
+                <label class="control-label" asp-for="Section">Section</label>
+                <input class="form-control" asp-for="Section" value="@Model.Section" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Roles</label><br/>
+                <input class="form-control" type="checkbox" asp-for="SingerRole" checked="@Model.SingerRole" />
+                <label>Singer</label><br/>
+                <input class="form-control" type="checkbox" asp-for="CouncilRole" checked="@Model.CouncilRole" />
+                <label>Council</label><br/>
+                <input class="form-control" type="checkbox" asp-for="ConductorRole" checked="@Model.ConductorRole" />
+                <label>Conductor</label><br/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+            <div class="form-group">
+                <a class="btn btn-danger" asp-controller="Members" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
 </div>
 
