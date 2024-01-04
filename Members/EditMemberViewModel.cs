@@ -5,7 +5,7 @@ public class EditMemberViewModel {
     public string Name { get; set; } = "";
     public string PhoneNumber { get; set; } = "";
     public string Email { get; set; } = "";
-    public string Section { get; set; } = "";
+    public Section Section { get; set; } = Section.TenorOne;
     public bool SingerRole { get; set; } = true;
     public bool CouncilRole { get; set; } = false;
     public bool ConductorRole { get; set; } = false;
@@ -21,7 +21,7 @@ public class EditMemberViewModel {
             Name = this.Name,
             PhoneNumber = this.PhoneNumber,
             Email = this.Email,
-            Section = Enum.Parse<Section>(this.Section),
+            Section = this.Section,
             Roles = roles
         };
         return member;
@@ -33,7 +33,7 @@ public class EditMemberViewModel {
             Name = member.Name,
             PhoneNumber = member.PhoneNumber,
             Email = member.Email,
-            Section = member.Section.ToString(),
+            Section = member.Section,
             SingerRole = member.Roles.Contains(Role.Singer),
             CouncilRole = member.Roles.Contains(Role.Council),
             ConductorRole = member.Roles.Contains(Role.Conductor)
