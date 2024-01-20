@@ -1,0 +1,64 @@
+@model WebApp.Concerts.Models.EditConcertViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Edit";
+}
+<h1>Edit</h1>
+
+<h4>Concert</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditConcert" method="POST">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label class="form-label" asp-for="Title">Title</label>
+                <input class="form-input" asp-for="Title" value="@Model.Title"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Location.Latitude">Location latitude</label>
+                <input class="form-input" asp-for="Location.Latitude" value="@Model.Location.Latitude"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Location.Longitude">Location longitude</label>
+                <input class="form-input" asp-for="Location.Longitude" value="@Model.Location.Longitude"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="MeetupTime">Meetup time</label>
+                <input class="form-input" type="datetime-local" asp-for="MeetupTime" value="@Model.MeetupTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="SoundCheckTime">Sound check time</label>
+                <input class="form-input" type="datetime-local" asp-for="SoundCheckTime" value="@Model.SoundCheckTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="StartTime">Start time</label>
+                <input class="form-input" type="datetime-local" asp-for="StartTime" value="@Model.StartTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="ExpectedEndTime">Expected end time</label>
+                <input class="form-input" type="datetime-local" asp-for="ExpectedEndTime" value="@Model.ExpectedEndTime"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Notes">Notes</label>
+                <input class="form-input" asp-for="Notes" value="@Model.Notes"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Status">Status</label>
+                <input class="form-input" asp-for="Status" value="@Model.Status"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+        <div class="form-group">
+            <a class="btn btn-danger" asp-controller="Concerts" asp-action="DeleteConcert" asp-route-id="@Model.Id">Delete</a>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="ConcertList">Back to List</a>
+</div>
