@@ -75,9 +75,13 @@ internal class Program
 
     private static void ConfigureWebApplication(WebApplication app)
     {
+        app.UseExceptionHandler(a => a.Run(async context =>
+        {
+        }));
+
         if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
@@ -85,18 +89,6 @@ internal class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseAuthorization();
-        app.UseExceptionHandler(a => a.Run(async context =>
-        {
-            var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-            var exception = exceptionHandlerPathFeature?.Error;
-            if (exception is null) {
-                context.RequestServices
-                    .GetRequiredService<Microsoft.Extensions.Logging.ILogger<Program>>()
-                    .LogError(exception, "An error has occurred while processing request");
-            }
-           
-            await context.Response.WriteAsJsonAsync(new { error = "An error has occurred while processing request" });
-        }));
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Members}/{action=Index}/{id?}");
