@@ -23,6 +23,10 @@ internal class Program
 
     private static void ConfigureBuilder(WebApplicationBuilder builder)
     {
+        builder.Services.AddHeaderPropagation(options => {
+            options.Headers.Add("X-Correlation-Id");
+        });
+        
         ConfigureMvc(builder);
         ConfigureServices(builder);
         ConfigureLogging(builder);
@@ -75,9 +79,18 @@ internal class Program
 
     private static void ConfigureWebApplication(WebApplication app)
     {
-        app.UseExceptionHandler(a => a.Run(async context =>
-        {
-        }));
+        string correlationIdKey = "X-Correlation-Id";
+        app.Use(async (context, next) => {
+            context.Response.OnStarting(() => {
+                if (context.Response.Headers[correlationIdKey] == "") {
+                    string correlationId = Guid.NewGuid().ToString();
+                    context.Response.Headers[correlationIdKey] = correlationId;
+                }
+                return Task.CompletedTask;
+            });
+
+            await next.Invoke(context);
+        });
 
         if (!app.Environment.IsDevelopment())
         {
@@ -89,6 +102,7 @@ internal class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseAuthorization();
+        app.UseHeaderPropagation();
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Members}/{action=Index}/{id?}");
