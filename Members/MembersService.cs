@@ -9,6 +9,7 @@ public class MembersService : IMembersService
     private readonly HttpClient _httpClient;
     private readonly string? _serviceUrl;
     private readonly JsonSerializerOptions _serializeOptions;
+
     public MembersService(
             ILogger<MembersService> logger,
             IConfiguration config)
