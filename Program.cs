@@ -40,6 +40,7 @@ internal class Program
         {
             options.ViewLocationExpanders.Add(new AppViewLocator());
         });
+        builder.Services.AddHttpContextAccessor();
     }
 
     private static void ConfigureServices(WebApplicationBuilder builder)
