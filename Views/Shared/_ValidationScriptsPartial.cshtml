@@ -1,2 +1,7 @@
-﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration config
+@{
+    string app_base = config["APP_BASE"] ?? "";
+}
+
+<script src="~@app_base/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~@app_base/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
