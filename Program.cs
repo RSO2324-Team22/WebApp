@@ -54,7 +54,6 @@ internal class Program
     {
         builder.Host.UseSerilog((context, config) => {
             config.ReadFrom.Configuration(builder.Configuration)
-                .Enrich.WithCorrelationId()
                 .Enrich.WithCorrelationIdHeader("X-Correlation-Id");
         });
     }
@@ -101,7 +100,7 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        app.UseStaticFiles("/app/static");
         app.UseAuthorization();
         app.UseHeaderPropagation();
         app.MapControllerRoute(
