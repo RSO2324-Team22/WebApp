@@ -80,8 +80,10 @@ internal class Program
 
     private static void ConfigureWebApplication(WebApplication app)
     {
+        string app_base = app.Configuration["APP_BASE"] ?? "/";
+        app.UsePathBase(app_base);
+
         string correlationIdKey = "X-Correlation-Id";
-        app.UsePathBase(app.Configuration["APP_BASE"] ?? "/");
         app.Use(async (context, next) => {
             context.Response.OnStarting(() => {
                 if (context.Response.Headers[correlationIdKey] == "") {
@@ -103,7 +105,9 @@ internal class Program
 
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions {
+            RequestPath = app_base
+        });
         app.UseAuthorization();
         app.UseHeaderPropagation();
         app.MapControllerRoute(
