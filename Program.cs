@@ -105,9 +105,7 @@ internal class Program
 
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseStaticFiles(new StaticFileOptions {
-            RequestPath = app_base
-        });
+        app.UseStaticFiles();
         app.UseAuthorization();
         app.UseHeaderPropagation();
         app.MapControllerRoute(
