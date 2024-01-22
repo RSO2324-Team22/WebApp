@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Metrics;
@@ -101,6 +102,7 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseRouting();
         app.UseStaticFiles();
         app.UseAuthorization();
         app.UseHeaderPropagation();
