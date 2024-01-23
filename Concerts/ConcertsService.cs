@@ -1,6 +1,6 @@
 using System.Text.Json;
 using WebApp.Concerts.Models;
-using WebApp.Shared;
+using WebApp.Locations;
 
 namespace WebApp.Concerts;
 
@@ -21,22 +21,19 @@ public class ConcertsService : IConcertsService
 
     public async Task<List<Concert>> GetConcertsAsync()
     {
+        this._logger.LogInformation("Fetching concerts");
         string body;
         try
         {
             using HttpResponseMessage response = await this._httpClient.GetAsync("");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Concert>>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error has occurred while fetching concerts");
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<List<Concert>>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -47,22 +44,19 @@ public class ConcertsService : IConcertsService
 
     public async Task<Concert> GetConcertByIdAsync(int id)
     {
+        this._logger.LogInformation("Fetching concert {id}", id);
         string body;
         try
         {
             using HttpResponseMessage response = await this._httpClient.GetAsync($"{id}");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while fetching concert {id}");
+            this._logger.LogError(e, "An error occured while fetching concert {id}", id);
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -73,17 +67,14 @@ public class ConcertsService : IConcertsService
 
     public async Task<Concert> EditConcertAsync(Concert concert)
     {
+        this._logger.LogInformation("Editing concert {id}", concert.Id);
         string body;
         try
         {
             var editedConcert = new CreateConcertModel
             {
                 Title = concert.Title,
-                Location = new Location()
-                {
-                    Latitude = concert.Location.Latitude,
-                    Longitude = concert.Location.Longitude,
-                },
+                Location = concert.Location,
                 MeetupTime = concert.MeetupTime,
                 SoundCheckTime = concert.SoundCheckTime,
                 StartTime = concert.StartTime,
@@ -98,16 +89,12 @@ public class ConcertsService : IConcertsService
                 await this._httpClient.PutAsync($"{concert.Id}", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error occured while editing concert {id}", concert.Id);
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -118,6 +105,7 @@ public class ConcertsService : IConcertsService
 
     public async Task<Concert> CreateConcertAsync(CreateConcertModel newConcert)
     {
+        this._logger.LogInformation("Adding new concert");
         string body;
         try
         {
@@ -126,18 +114,16 @@ public class ConcertsService : IConcertsService
                 await this._httpClient.PostAsync("", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            Concert concert = JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
+            this._logger.LogInformation("Added concert {id}", concert.Id);
+            return concert;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error occured while creating a new concert");
             throw;
         }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
-        }
-        catch (Exception e)
+        catch (JsonException e)
         {
             this._logger.LogError(e, "Response body could not be deserialized");
             throw;
@@ -146,6 +132,7 @@ public class ConcertsService : IConcertsService
 
     public async Task DeleteConcertAsync(int id)
     {
+        this._logger.LogInformation("Deleting concert {id}", id);
         try
         {
             using HttpResponseMessage response =

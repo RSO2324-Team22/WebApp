@@ -1,17 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Rehearsals.Models;
-using WebApp.Shared;
 
 namespace WebApp.Rehearsals;
 
 public class RehearsalsController : Controller
 {
     private readonly object _logger;
-    private readonly IRehearsalService _rehearsalService;
+    private readonly IRehearsalsService _rehearsalService;
 
     public RehearsalsController(
         ILogger<RehearsalsController> logger,
-        IRehearsalService rehearsalService) {
+        IRehearsalsService rehearsalService) {
         this._logger = logger;
         this._rehearsalService = rehearsalService;
     }

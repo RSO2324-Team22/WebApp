@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Metrics;
+using Polly;
+using Polly.Extensions.Http;
 using Serilog;
 using Serilog.Events;
+using Serilog.HttpClient.Extensions;
 using WebApp;
 using WebApp.Concerts;
 using WebApp.Members;
@@ -29,7 +32,7 @@ internal class Program
         });
         
         ConfigureMvc(builder);
-        ConfigureServices(builder);
+        ConfigureHttpClients(builder);
         ConfigureLogging(builder);
         ConfigureMetrics(builder);
     }
@@ -44,21 +47,43 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
     }
 
-    private static void ConfigureServices(WebApplicationBuilder builder)
-    {
+    private static void ConfigureHttpClients(WebApplicationBuilder builder) {
+        builder.Services.AddHeaderPropagation(options => {
+            options.Headers.Add("X-Correlation-Id");
+        });
+
+        IAsyncPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+        IAsyncPolicy<HttpResponseMessage> circuitBreakerPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+
         string? members_service_url = builder.Configuration["MEMBERS_SERVICE_URL"];
         builder.Services.AddHttpClient<IMembersService, MembersService>(client => {
             client.BaseAddress = new Uri($"{members_service_url}/member");
-        });
+        }).AddHeaderPropagation()
+          .AddPolicyHandler(retryPolicy)
+          .AddPolicyHandler(circuitBreakerPolicy)
+          .LogRequestResponse();
         
         string? planning_service_url = builder.Configuration["PLANNING_SERVICE_URL"];
         builder.Services.AddHttpClient<IConcertsService, ConcertsService>(client => {
             client.BaseAddress = new Uri($"{planning_service_url}/concert");
-        });
-        builder.Services.AddHttpClient<IRehearsalService, RehearsalService>(client => {
+        }).AddHeaderPropagation()
+          .AddPolicyHandler(retryPolicy)
+          .AddPolicyHandler(circuitBreakerPolicy)
+          .LogRequestResponse();
+
+
+        builder.Services.AddHttpClient<IRehearsalsService, RehearsalsService>(client => {
             client.BaseAddress = new Uri($"{planning_service_url}/rehearsal");
-        });
-        
+        }).AddHeaderPropagation()
+          .AddPolicyHandler(retryPolicy)
+          .AddPolicyHandler(circuitBreakerPolicy)
+          .LogRequestResponse();
+
         string? attendance_service_url = builder.Configuration["ATTENDANCE_SERVICE_URL"];
     }
 

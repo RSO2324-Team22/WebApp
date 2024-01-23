@@ -2,7 +2,7 @@ using WebApp.Rehearsals.Models;
 
 namespace WebApp.Rehearsals;
 
-public interface IRehearsalService
+public interface IRehearsalsService
 {
     Task<Rehearsal> CreateRehearsalAsync(CreateRehearsalModel newRehearsal);
     Task DeleteRehearsalAsync(int id);

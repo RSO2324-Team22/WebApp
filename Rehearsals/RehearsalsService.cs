@@ -1,17 +1,16 @@
 using System.Text.Json;
 using WebApp.Rehearsals.Models;
-using WebApp.Shared;
 
 namespace WebApp.Rehearsals;
 
-public class RehearsalService : IRehearsalService
+public class RehearsalsService : IRehearsalsService
 {
-    private readonly ILogger<RehearsalService> _logger;
+    private readonly ILogger<RehearsalsService> _logger;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _serializeOptions;
 
-    public RehearsalService(
-        ILogger<RehearsalService> logger,
+    public RehearsalsService(
+        ILogger<RehearsalsService> logger,
         HttpClient httpClient)
     {
         this._logger = logger;
@@ -21,22 +20,19 @@ public class RehearsalService : IRehearsalService
 
     public async Task<List<Rehearsal>> GetRehearsalsAsync()
     {
+        this._logger.LogInformation("Fetching rehearsals");
         string body;
         try
         {
             using HttpResponseMessage response = await this._httpClient.GetAsync("");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Rehearsal>>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occurred while fetching rehearsals.");
+            this._logger.LogError(e, "An error has occurred while fetching rehearsals");
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<List<Rehearsal>>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -47,22 +43,19 @@ public class RehearsalService : IRehearsalService
 
     public async Task<Rehearsal> GetRehearsalByIdAsync(int id)
     {
+        this._logger.LogInformation("Fetching rehearsal {id}", id);
         string body;
         try
         {
             using HttpResponseMessage response = await this._httpClient.GetAsync($"{id}");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error occured while fetching rehearsal {id}", id);
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -73,21 +66,19 @@ public class RehearsalService : IRehearsalService
 
     public async Task<Rehearsal> EditRehearsalAsync(Rehearsal rehearsal)
     {
+        this._logger.LogInformation("Editing rehearsal {id}", rehearsal.Id);
         string body;
         try
         {
             var editedRehearsal = new CreateRehearsalModel
             {
                 Title = rehearsal.Title,
-                Location = new Location()
-                {
-                    Latitude = rehearsal.Location.Latitude,
-                    Longitude = rehearsal.Location.Longitude,
-                },
+                Location = rehearsal.Location,
                 StartTime = rehearsal.StartTime,
                 EndTime = rehearsal.EndTime,
                 Notes = rehearsal.Notes,
-                Status = rehearsal.Status
+                Status = rehearsal.Status,
+                Type = rehearsal.Type
             };
 
             JsonContent json = JsonContent.Create<CreateRehearsalModel>(editedRehearsal);
@@ -96,16 +87,12 @@ public class RehearsalService : IRehearsalService
                 await this._httpClient.PutAsync($"{rehearsal.Id}", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error occured while editing rehearsal {id}", rehearsal.Id);
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -116,6 +103,7 @@ public class RehearsalService : IRehearsalService
 
     public async Task<Rehearsal> CreateRehearsalAsync(CreateRehearsalModel newRehearsal)
     {
+        this._logger.LogInformation("Adding new rehearsal");
         string body;
         try
         {
@@ -124,16 +112,14 @@ public class RehearsalService : IRehearsalService
                 await this._httpClient.PostAsync("", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
+            Rehearsal rehearsal = JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions)!;
+            this._logger.LogInformation("Added rehearsal {id}", rehearsal.Id);
+            return rehearsal;
         }
         catch (HttpRequestException e)
         {
             this._logger.LogError(e, "An error occured while creating a new rehearsal");
             throw;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<Rehearsal>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -144,6 +130,7 @@ public class RehearsalService : IRehearsalService
 
     public async Task DeleteRehearsalAsync(int id)
     {
+        this._logger.LogInformation("Deleting rehearsal {id}", id);
         try
         {
             using HttpResponseMessage response =
@@ -152,7 +139,7 @@ public class RehearsalService : IRehearsalService
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while deleting rehearsal {id}", id);
+            this._logger.LogError(e, "An error occured while fetching rehearsal {id}", id);
             throw;
         }
     }

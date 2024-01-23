@@ -1,4 +1,4 @@
-using WebApp.Shared;
+using WebApp.Locations;
 
 namespace WebApp.Rehearsals;
 

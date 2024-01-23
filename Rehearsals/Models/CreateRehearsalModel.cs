@@ -1,5 +1,4 @@
-using WebApp.Rehearsals.Models;
-using WebApp.Shared;
+using WebApp.Locations;
 
 namespace WebApp.Rehearsals.Models;
 
