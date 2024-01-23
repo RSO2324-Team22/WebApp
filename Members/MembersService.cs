@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 
 namespace WebApp.Members;
@@ -26,7 +27,7 @@ public class MembersService : IMembersService
             using HttpResponseMessage response = await this._httpClient.GetAsync("");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Member>>(body, this._serializeOptions)!;
+            return JsonSerializer.Deserialize<List<Member>>(body, this._serializeOptions) ?? new List<Member>();
         }
         catch (HttpRequestException e)
         {
@@ -40,19 +41,23 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task<Member> GetMemberByIdAsync(int id)
+    public async Task<Member?> GetMemberByIdAsync(int id)
     {
         this._logger.LogInformation("Fetching member {id}", id);
         string body;
         try
         {
-            using HttpResponseMessage response = await this._httpClient.GetAsync($"{id}");
+            using HttpResponseMessage response = await this._httpClient.GetAsync($"member/{id}");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Member>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode is not null && e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while fetching member {id}", id);
             throw;
         }
@@ -63,7 +68,7 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task<Member> EditMemberAsync(Member member)
+    public async Task<Member?> EditMemberAsync(Member member)
     {
         this._logger.LogInformation("Editing member {id}", member.Id);
         string body;
@@ -80,13 +85,17 @@ public class MembersService : IMembersService
 
             JsonContent json = JsonContent.Create<CreateMemberModel>(editedMember, null, this._serializeOptions);
             using HttpResponseMessage response =
-                await this._httpClient.PutAsync($"{member.Id}", json);
+                await this._httpClient.PutAsync($"member/{member.Id}", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Member>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode is not null && e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while fetching member {id}", member.Id);
             throw;
         }
@@ -123,18 +132,30 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task DeleteMemberAsync(int id)
+    public async Task<Member?> DeleteMemberAsync(int id)
     {
         this._logger.LogInformation("Deleting member {id}", id);
+        string body;
         try
         {
             using HttpResponseMessage response =
-                await this._httpClient.DeleteAsync($"{id}");
+                await this._httpClient.DeleteAsync($"member/{id}");
             response.EnsureSuccessStatusCode();
+            body = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Member>(body)!;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode is not null && e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while fetching member {id}", id);
+            throw;
+        }
+        catch (JsonException e)
+        {
+            this._logger.LogError(e, "Response body could not be deserialized");
             throw;
         }
     }

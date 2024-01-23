@@ -42,13 +42,21 @@ public class RehearsalsController : Controller
     [HttpPost]
     public async Task<ActionResult> New(CreateRehearsalViewModel model) {
         CreateRehearsalModel newRehearsal = model.ToNewRehearsal();
-        Rehearsal concert = await this._rehearsalService.CreateRehearsalAsync(newRehearsal);
+        Rehearsal? rehearsal = await this._rehearsalService.CreateRehearsalAsync(newRehearsal);
+        if (rehearsal is null) {
+            return NotFound();
+        }
+
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public async Task<ActionResult> Edit(int id) {
-        Rehearsal rehearsal = await this._rehearsalService.GetRehearsalByIdAsync(id);
+        Rehearsal? rehearsal = await this._rehearsalService.GetRehearsalByIdAsync(id);
+        if (rehearsal is null) {
+            return NotFound();
+        }
+
         EditRehearsalViewModel model = EditRehearsalViewModel.FromRehearsal(rehearsal);
         return View("EditRehearsal", model);
     }
@@ -56,13 +64,21 @@ public class RehearsalsController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(int id, EditRehearsalViewModel model) {
         Rehearsal rehearsal = model.ToRehearsal();
-        Rehearsal editedRehearsal = await this._rehearsalService.EditRehearsalAsync(rehearsal);
+        Rehearsal? editedRehearsal = await this._rehearsalService.EditRehearsalAsync(rehearsal);
+        if (editedRehearsal is null) {
+            return NotFound();
+        }
+
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public async Task<ActionResult> Delete(int id) {
-        await this._rehearsalService.DeleteRehearsalAsync(id); 
+        Rehearsal? rehearsal = await this._rehearsalService.DeleteRehearsalAsync(id); 
+        if (rehearsal is null) {
+            return NotFound();
+        }
+
         return RedirectToAction("Index");
     }
 }

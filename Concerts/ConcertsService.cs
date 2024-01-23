@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using WebApp.Concerts.Models;
 using WebApp.Locations;
@@ -42,19 +43,23 @@ public class ConcertsService : IConcertsService
         }
     }
 
-    public async Task<Concert> GetConcertByIdAsync(int id)
+    public async Task<Concert?> GetConcertByIdAsync(int id)
     {
         this._logger.LogInformation("Fetching concert {id}", id);
         string body;
         try
         {
-            using HttpResponseMessage response = await this._httpClient.GetAsync($"{id}");
+            using HttpResponseMessage response = await this._httpClient.GetAsync($"concert/{id}");
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while fetching concert {id}", id);
             throw;
         }
@@ -65,7 +70,7 @@ public class ConcertsService : IConcertsService
         }
     }
 
-    public async Task<Concert> EditConcertAsync(Concert concert)
+    public async Task<Concert?> EditConcertAsync(Concert concert)
     {
         this._logger.LogInformation("Editing concert {id}", concert.Id);
         string body;
@@ -86,13 +91,17 @@ public class ConcertsService : IConcertsService
             JsonContent json = JsonContent.Create<CreateConcertModel>(editedConcert);
             var neki = await json.ReadAsStringAsync();
             using HttpResponseMessage response =
-                await this._httpClient.PutAsync($"{concert.Id}", json);
+                await this._httpClient.PutAsync($"concert/{concert.Id}", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while editing concert {id}", concert.Id);
             throw;
         }
@@ -130,17 +139,25 @@ public class ConcertsService : IConcertsService
         }
     }
 
-    public async Task DeleteConcertAsync(int id)
+    public async Task<Concert?> DeleteConcertAsync(int id)
     {
         this._logger.LogInformation("Deleting concert {id}", id);
+        string body;
         try
         {
             using HttpResponseMessage response =
-                await this._httpClient.DeleteAsync($"{id}");
+                await this._httpClient.DeleteAsync($"concert/{id}");
             response.EnsureSuccessStatusCode();
+            body = await response.Content.ReadAsStringAsync();
+            Concert concert = JsonSerializer.Deserialize<Concert>(body, this._serializeOptions)!;
+            return concert;
         }
         catch (HttpRequestException e)
         {
+            if (e.StatusCode == HttpStatusCode.NotFound) {
+                return null;
+            }
+
             this._logger.LogError(e, "An error occured while fetching concert {id}", id);
             throw;
         }

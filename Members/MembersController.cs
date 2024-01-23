@@ -47,21 +47,30 @@ public class MembersController : Controller
 
     [HttpGet]
     public async Task<ActionResult> Edit(int id) {
-        Member member = await this._membersService.GetMemberByIdAsync(id);
+        Member? member = await this._membersService.GetMemberByIdAsync(id);
+        if (member is null) {
+            return NotFound();
+        }
         EditMemberViewModel model = EditMemberViewModel.FromMember(member);
         return View("EditMember", model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,PhoneNumber,Email,Section,SingerRole,CouncilRole,ConductorRole")] EditMemberViewModel model) {
+    public async Task<IActionResult> Edit(int id, EditMemberViewModel model) {
         Member member = model.ToMember();
-        Member editedMember = await this._membersService.EditMemberAsync(member);
+        Member? editedMember = await this._membersService.EditMemberAsync(member);
+        if (editedMember is null) {
+            return NotFound();
+        }
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public async Task<ActionResult> Delete(int id) {
-        await this._membersService.DeleteMemberAsync(id); 
+        Member? member = await this._membersService.DeleteMemberAsync(id);
+        if (member is null) {
+            return NotFound();
+        }
         return RedirectToAction("Index");
     }
 }
