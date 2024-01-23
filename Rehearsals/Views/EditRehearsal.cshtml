@@ -12,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditRehearsal" method="POST">
+        <form asp-action="Edit" method="POST">
             <input type="hidden" asp-for="Id" value="@Model.Id" />
             <div class="form-group">
                 <label class="form-label" asp-for="Title">Title</label>
@@ -56,5 +56,5 @@
     </div>
 </div>
 <div>
-    <a asp-action="ConcertList">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>

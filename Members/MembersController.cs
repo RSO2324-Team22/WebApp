@@ -20,27 +20,27 @@ public class MembersController : Controller
 
         MembersViewModel model = new MembersViewModel {
             Members = members.Select(m => new MembersViewModel.Member {
-                Id = m.id, 
-                Name = m.name, 
-                PhoneNumber = m.phoneNumber, 
-                Email = m.email, 
-                Section = m.section.ToString(),
-                Roles = m.roles.Select(r => r.ToString()) 
+                Id = m.Id, 
+                Name = m.Name, 
+                PhoneNumber = m.PhoneNumber, 
+                Email = m.Email, 
+                Section = m.Section.ToString(),
+                Roles = m.Roles.Select(r => r.ToString()) 
             }) 
         };
-        return View(model);
+        return View("MemberList", model);
     }
 
     [HttpGet]
     public ActionResult New()
     {
         CreateMemberViewModel newMember = new CreateMemberViewModel();
-        return View(newMember);
+        return View("NewMember", newMember);
     }
     
     [HttpPost]
     public async Task<ActionResult> New(CreateMemberViewModel model) {
-        NewMember newMember = model.ToNewMember();
+        CreateMemberModel newMember = model.ToModel();
         Member member = await this._membersService.CreateMemberAsync(newMember);
         return RedirectToAction("Index");
     }
@@ -49,7 +49,7 @@ public class MembersController : Controller
     public async Task<ActionResult> Edit(int id) {
         Member member = await this._membersService.GetMemberByIdAsync(id);
         EditMemberViewModel model = EditMemberViewModel.FromMember(member);
-        return View(model);
+        return View("EditMember", model);
     }
 
     [HttpPost]

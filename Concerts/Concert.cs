@@ -1,17 +1,24 @@
-using WebApp.Concerts.Models;
 using WebApp.Shared;
 
 namespace WebApp.Concerts;
 
 public class Concert
 {
-    public int id { get; set; }
-    public required string title { get; set; }
-    public required LocationS location { get; set; }
-    public DateTime? meetupTime { get; set; }
-    public DateTime? soundCheckTime { get; set; }
-    public required DateTime startTime { get; set; }
-    public DateTime? expectedEndTime { get; set; }
-    public string? notes { get; set; }
-    public ConcertStatus status { get; set; }
+    public int Id { get; set; }
+    public required string Title { get; set; }
+    public required Location Location { get; set; }
+    public DateTime? MeetupTime { get; set; }
+    public DateTime? SoundCheckTime { get; set; }
+    public required DateTime StartTime { get; set; }
+    public DateTime? ExpectedEndTime { get; set; }
+    public string? Notes { get; set; }
+    public ConcertStatus Status { get; set; }
+}
+
+public enum ConcertStatus {
+    Proposed,
+    InArrangement,
+    AwaitingApproval,
+    Confirmed,
+    Cancelled
 }

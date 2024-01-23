@@ -12,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditConcert" method="POST">
+        <form asp-action="Edit" method="POST">
             <input type="hidden" asp-for="Id" value="@Model.Id" />
             <div class="form-group">
                 <label class="form-label" asp-for="Title">Title</label>
@@ -55,7 +55,7 @@
             </div>
         </form>
         <div class="form-group">
-            <a class="btn btn-danger" asp-controller="Concerts" asp-action="DeleteConcert" asp-route-id="@Model.Id">Delete</a>
+            <a class="btn btn-danger" asp-controller="Concerts" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
         </div>
     </div>
 </div>

@@ -1,17 +1,30 @@
-using WebApp.Concerts.Models;
-using WebApp.Rehearsals.Models;
 using WebApp.Shared;
 
 namespace WebApp.Rehearsals;
 
 public class Rehearsal
 {
-    public int id { get; set; }
-    public required string title { get; set; }
-    public required LocationS location { get; set; }
-    public required DateTime startTime { get; set; }
-    public DateTime endTime { get; set; }
-    public string? notes { get; set; }
-    public RehearsalStatus status { get; set; }
-    public RehearsalType type { get; set; }
+    public int Id { get; set; }
+    public required string Title { get; set; }
+    public required Location Location { get; set; }
+    public required DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
+    public string? Notes { get; set; }
+    public RehearsalStatus Status { get; set; }
+    public RehearsalType Type { get; set; }
+}
+
+public enum RehearsalStatus {
+    Proposed,
+    InArrangement,
+    AwaitingApproval,
+    Confirmed,
+    Cancelled
+}
+
+public enum RehearsalType
+{
+    Regular,
+    Extra,
+    Intensive   
 }

@@ -4,7 +4,7 @@ namespace WebApp.Rehearsals;
 
 public interface IRehearsalService
 {
-    Task<Rehearsal> CreateRehearsalAsync(NewRehearsal newRehearsal);
+    Task<Rehearsal> CreateRehearsalAsync(CreateRehearsalModel newRehearsal);
     Task DeleteRehearsalAsync(int id);
     Task<Rehearsal> EditRehearsalAsync(Rehearsal member);
     Task<Rehearsal> GetRehearsalByIdAsync(int id);

@@ -17,26 +17,26 @@ public class EditMemberViewModel {
         if (this.ConductorRole) roles.Add(Role.Conductor);
         
         Member member = new Member {
-            id = this.Id,
-            name = this.Name,
-            phoneNumber = this.PhoneNumber,
-            email = this.Email,
-            section = this.Section,
-            roles = roles
+            Id = this.Id,
+            Name = this.Name,
+            PhoneNumber = this.PhoneNumber,
+            Email = this.Email,
+            Section = this.Section,
+            Roles = roles
         };
         return member;
     }
 
     public static EditMemberViewModel FromMember(Member member) { 
         EditMemberViewModel model = new EditMemberViewModel {
-            Id = member.id,
-            Name = member.name,
-            PhoneNumber = member.phoneNumber,
-            Email = member.email,
-            Section = member.section,
-            SingerRole = member.roles.Contains(Role.Singer),
-            CouncilRole = member.roles.Contains(Role.Council),
-            ConductorRole = member.roles.Contains(Role.Conductor)
+            Id = member.Id,
+            Name = member.Name,
+            PhoneNumber = member.PhoneNumber,
+            Email = member.Email,
+            Section = member.Section,
+            SingerRole = member.Roles.Contains(Role.Singer),
+            CouncilRole = member.Roles.Contains(Role.Council),
+            ConductorRole = member.Roles.Contains(Role.Conductor)
         };
         return model;
     }

@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using WebApp.Rehearsals.Views
+@using WebApp.Rehearsals.Models
+@model WebApp.Rehearsals.Models.RehearsalsViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -11,7 +12,7 @@
 <h1>Table of Rehearsals</h1>
 
 <p>
-    <a asp-action="NewRehearsal">Create New</a>
+    <a asp-action="New">Create New</a>
 </p>
 <div class="row">
     <table class="table-striped">
@@ -29,9 +30,9 @@
         </thead>
 
         <tbody>
-        @foreach(RehearsalViewModel.Rehearsal rehearsal in Model.Rehearsals) {
+        @foreach(RehearsalsViewModel.Rehearsal rehearsal in Model.Rehearsals) {
             <tr>
-                <td><a class="nav-link" asp-area="" asp-controller="Rehearsals" asp-action="EditRehearsal" asp-route-id="@rehearsal.Id">@rehearsal.Title</a></td>
+                <td><a class="nav-link" asp-area="" asp-controller="Rehearsals" asp-action="Edit" asp-route-id="@rehearsal.Id">@rehearsal.Title</a></td>
                 <td>@rehearsal.Location.Latitude</td>
                 <td>@rehearsal.Location.Longitude</td>
                 <td>@rehearsal.StartTime</td>

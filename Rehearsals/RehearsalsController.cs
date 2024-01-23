@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Concerts.Models;
-using WebApp.Concerts.Views;
-using WebApp.Rehearsals;
 using WebApp.Rehearsals.Models;
-using WebApp.Rehearsals.Views;
 using WebApp.Shared;
 
 namespace WebApp.Rehearsals;
@@ -20,58 +16,54 @@ public class RehearsalsController : Controller
         this._rehearsalService = rehearsalService;
     }
     
-    public async Task<ActionResult> RehearsalList() {
+    public async Task<ActionResult> Index() {
         List<Rehearsal> concerts = await this._rehearsalService.GetRehearsalsAsync();
 
-        RehearsalViewModel model = new RehearsalViewModel {
-            Rehearsals = concerts.Select(c => new RehearsalViewModel.Rehearsal {
-                Id = c.id,
-                Title = c.title,
-                Location = new Location()
-                {
-                    Latitude = c.location.latitude,
-                    Longitude = c.location.longitude,
-                },
-                StartTime = c.startTime,
-                EndTime = c.endTime,
-                Notes = c.notes,
-                Status = c.status
+        RehearsalsViewModel model = new RehearsalsViewModel {
+            Rehearsals = concerts.Select(c => new RehearsalsViewModel.Rehearsal {
+                Id = c.Id,
+                Title = c.Title,
+                Location = c.Location,
+                StartTime = c.StartTime,
+                EndTime = c.EndTime,
+                Notes = c.Notes,
+                Status = c.Status
             }) 
         };
-        return View(model);
+        return View("RehearsalList", model);
     }
 
     [HttpGet]
-    public ActionResult NewRehearsal()
+    public ActionResult New()
     {
-        CreateRehearsalViewModel newConcert = new CreateRehearsalViewModel();
-        return View(newConcert);
+        CreateRehearsalViewModel newRehearsal = new CreateRehearsalViewModel();
+        return View("NewRehearsal", newRehearsal);
     }
     
     [HttpPost]
-    public async Task<ActionResult> NewRehearsal(CreateRehearsalViewModel model) {
-        NewRehearsal newRehearsal = model.ToNewRehearsal();
+    public async Task<ActionResult> New(CreateRehearsalViewModel model) {
+        CreateRehearsalModel newRehearsal = model.ToNewRehearsal();
         Rehearsal concert = await this._rehearsalService.CreateRehearsalAsync(newRehearsal);
-        return RedirectToAction("RehearsalList");
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
-    public async Task<ActionResult> EditRehearsal(int id) {
+    public async Task<ActionResult> Edit(int id) {
         Rehearsal rehearsal = await this._rehearsalService.GetRehearsalByIdAsync(id);
         EditRehearsalViewModel model = EditRehearsalViewModel.FromRehearsal(rehearsal);
-        return View(model);
+        return View("EditRehearsal", model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditRehearsal(int id, EditRehearsalViewModel model) {
+    public async Task<IActionResult> Edit(int id, EditRehearsalViewModel model) {
         Rehearsal rehearsal = model.ToRehearsal();
         Rehearsal editedRehearsal = await this._rehearsalService.EditRehearsalAsync(rehearsal);
-        return RedirectToAction("RehearsalList");
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
-    public async Task<ActionResult> DeleteRehearsal(int id) {
+    public async Task<ActionResult> Delete(int id) {
         await this._rehearsalService.DeleteRehearsalAsync(id); 
-        return RedirectToAction("RehearsalList");
+        return RedirectToAction("Index");
     }
 }

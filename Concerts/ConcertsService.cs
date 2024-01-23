@@ -1,24 +1,25 @@
 using System.Text.Json;
-using WebApp.Members.Models;
+using WebApp.Concerts.Models;
+using WebApp.Shared;
 
-namespace WebApp.Members;
+namespace WebApp.Concerts;
 
-public class MembersService : IMembersService
+public class ConcertsService : IConcertsService
 {
-    private readonly ILogger<MembersService> _logger;
+    private readonly ILogger<ConcertsService> _logger;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _serializeOptions;
 
-    public MembersService(
-            ILogger<MembersService> logger,
-            HttpClient httpClient)
+    public ConcertsService(
+        ILogger<ConcertsService> logger,
+        HttpClient httpClient)
     {
         this._logger = logger;
         this._httpClient = httpClient;
         this._serializeOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
 
-    public async Task<List<Member>> GetMembersAsync()
+    public async Task<List<Concert>> GetConcertsAsync()
     {
         string body;
         try
@@ -29,13 +30,13 @@ public class MembersService : IMembersService
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occurred while fetching members");
+            this._logger.LogError(e, "An error has occurred while fetching concerts");
             throw;
         }
 
         try
         {
-            return JsonSerializer.Deserialize<List<Member>>(body, this._serializeOptions) ?? new List<Member>();
+            return JsonSerializer.Deserialize<List<Concert>>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -44,7 +45,7 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task<Member> GetMemberByIdAsync(int id)
+    public async Task<Concert> GetConcertByIdAsync(int id)
     {
         string body;
         try
@@ -55,13 +56,13 @@ public class MembersService : IMembersService
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while fetching member {id}", id);
+            this._logger.LogError(e, "An error occured while fetching concert {id}");
             throw;
         }
 
         try
         {
-            return JsonSerializer.Deserialize<Member>(body, this._serializeOptions);
+            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -70,35 +71,43 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task<Member> EditMemberAsync(Member member)
+    public async Task<Concert> EditConcertAsync(Concert concert)
     {
         string body;
         try
         {
-            var editedMember = new CreateMemberModel
+            var editedConcert = new CreateConcertModel
             {
-                Name = member.Name,
-                PhoneNumber = member.PhoneNumber,
-                Email = member.Email,
-                Section = member.Section,
-                Roles = member.Roles
+                Title = concert.Title,
+                Location = new Location()
+                {
+                    Latitude = concert.Location.Latitude,
+                    Longitude = concert.Location.Longitude,
+                },
+                MeetupTime = concert.MeetupTime,
+                SoundCheckTime = concert.SoundCheckTime,
+                StartTime = concert.StartTime,
+                ExpectedEndTime = concert.ExpectedEndTime,
+                Notes = concert.Notes,
+                Status = concert.Status
             };
 
-            JsonContent json = JsonContent.Create<CreateMemberModel>(editedMember, null, this._serializeOptions);
+            JsonContent json = JsonContent.Create<CreateConcertModel>(editedConcert);
+            var neki = await json.ReadAsStringAsync();
             using HttpResponseMessage response =
-                await this._httpClient.PutAsync($"{member.Id}", json);
+                await this._httpClient.PutAsync($"{concert.Id}", json);
             response.EnsureSuccessStatusCode();
             body = await response.Content.ReadAsStringAsync();
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while fetching member {id}", member.Id);
+            this._logger.LogError(e, "An error occured while editing concert {id}", concert.Id);
             throw;
         }
 
         try
         {
-            return JsonSerializer.Deserialize<Member>(body, this._serializeOptions);
+            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
         }
         catch (JsonException e)
         {
@@ -107,12 +116,12 @@ public class MembersService : IMembersService
         }
     }
 
-    public async Task<Member> CreateMemberAsync(CreateMemberModel newMember)
+    public async Task<Concert> CreateConcertAsync(CreateConcertModel newConcert)
     {
         string body;
         try
         {
-            JsonContent json = JsonContent.Create<CreateMemberModel>(newMember, null, this._serializeOptions);
+            JsonContent json = JsonContent.Create<CreateConcertModel>(newConcert);
             using HttpResponseMessage response =
                 await this._httpClient.PostAsync("", json);
             response.EnsureSuccessStatusCode();
@@ -120,22 +129,22 @@ public class MembersService : IMembersService
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while creating a new member");
+            this._logger.LogError(e, "An error occured while creating a new concert");
             throw;
         }
 
         try
         {
-            return JsonSerializer.Deserialize<Member>(body);
+            return JsonSerializer.Deserialize<Concert>(body, this._serializeOptions);
         }
-        catch (JsonException e)
+        catch (Exception e)
         {
             this._logger.LogError(e, "Response body could not be deserialized");
             throw;
         }
     }
 
-    public async Task DeleteMemberAsync(int id)
+    public async Task DeleteConcertAsync(int id)
     {
         try
         {
@@ -145,7 +154,7 @@ public class MembersService : IMembersService
         }
         catch (HttpRequestException e)
         {
-            this._logger.LogError(e, "An error occured while fetching member {id}");
+            this._logger.LogError(e, "An error occured while fetching concert {id}", id);
             throw;
         }
     }

@@ -15,36 +15,28 @@ public class EditRehearsalViewModel
 
     public Rehearsal ToRehearsal() {
         Rehearsal concert = new Rehearsal {
-            id = this.Id,
-            title = this.Title,
-            location = new LocationS()
-            {
-                latitude = this.Location.Latitude,
-                longitude = this.Location.Longitude
-            },
-            startTime = this.StartTime,
-            endTime = this.EndTime,
-            notes = this.Notes,
-            status = this.Status,
-            type = this.Type,
+            Id = this.Id,
+            Title = this.Title,
+            Location = this.Location,
+            StartTime = this.StartTime,
+            EndTime = this.EndTime,
+            Notes = this.Notes,
+            Status = this.Status,
+            Type = this.Type,
         };
         return concert;
     }
 
     public static EditRehearsalViewModel FromRehearsal(Rehearsal rehearsal) { 
         EditRehearsalViewModel model = new EditRehearsalViewModel {
-            Id = rehearsal.id,
-            Title = rehearsal.title,
-            Location = new Location()
-            {
-                Latitude = rehearsal.location.latitude,
-                Longitude = rehearsal.location.longitude,
-            },
-            StartTime = rehearsal.startTime,
-            EndTime = rehearsal.endTime,
-            Notes = rehearsal.notes,
-            Status = rehearsal.status,
-            Type = rehearsal.type,
+            Id = rehearsal.Id,
+            Title = rehearsal.Title,
+            Location = rehearsal.Location,
+            StartTime = rehearsal.StartTime,
+            EndTime = rehearsal.EndTime,
+            Notes = rehearsal.Notes,
+            Status = rehearsal.Status,
+            Type = rehearsal.Type,
         };
         return model;
     }

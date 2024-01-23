@@ -12,8 +12,8 @@ public class CreateRehearsalViewModel
     public string Status { get; set; } = "";
     public string Type { get; set; } = "";
 
-    public NewRehearsal ToNewRehearsal() {
-        NewRehearsal newRehearsal = new NewRehearsal {
+    public CreateRehearsalModel ToNewRehearsal() {
+        CreateRehearsalModel newRehearsal = new CreateRehearsalModel {
             Title = this.Title,
             Location = this.Location,
             StartTime = this.StartTime,
@@ -25,7 +25,7 @@ public class CreateRehearsalViewModel
         return newRehearsal;
     }
 
-    public static CreateRehearsalViewModel FromNewConcert(NewRehearsal rehearsal) { 
+    public static CreateRehearsalViewModel FromNewConcert(CreateRehearsalModel rehearsal) { 
         CreateRehearsalViewModel model = new CreateRehearsalViewModel {
             Title = rehearsal.Title,
             Location = rehearsal.Location,

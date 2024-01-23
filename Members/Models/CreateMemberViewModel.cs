@@ -9,13 +9,13 @@ public class CreateMemberViewModel {
     public bool CouncilRole { get; set; } = false;
     public bool ConductorRole { get; set; } = false;
 
-    public NewMember ToNewMember() {
+    public CreateMemberModel ToModel() {
         List<Role> roles = new List<Role>();
         if (this.SingerRole) roles.Add(Role.Singer);
         if (this.CouncilRole) roles.Add(Role.Council);
         if (this.ConductorRole) roles.Add(Role.Conductor);
         
-        NewMember newMember = new NewMember {
+        CreateMemberModel newMember = new CreateMemberModel {
             Name = this.Name,
             PhoneNumber = this.PhoneNumber,
             Email = this.Email,
@@ -25,7 +25,7 @@ public class CreateMemberViewModel {
         return newMember;
     }
 
-    public static CreateMemberViewModel FromNewMember(NewMember member) { 
+    public static CreateMemberViewModel FromModel(CreateMemberModel member) { 
         CreateMemberViewModel model = new CreateMemberViewModel {
             Name = member.Name,
             PhoneNumber = member.PhoneNumber,

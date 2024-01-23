@@ -13,8 +13,8 @@ public class CreateConcertViewModel
     public string? Notes { get; set; } = "";
     public string Status { get; set; } = "";
 
-    public NewConcert ToNewConcert() {
-        NewConcert newConcert = new NewConcert {
+    public CreateConcertModel ToNewConcert() {
+        CreateConcertModel newConcert = new CreateConcertModel {
             Title = this.Title,
             Location = this.Location,
             MeetupTime = this.MeetupTime,
@@ -27,7 +27,7 @@ public class CreateConcertViewModel
         return newConcert;
     }
 
-    public static CreateConcertViewModel FromNewConcert(NewConcert concert) { 
+    public static CreateConcertViewModel FromNewConcert(CreateConcertModel concert) { 
         CreateConcertViewModel model = new CreateConcertViewModel {
             Title = concert.Title,
             Location = concert.Location,

@@ -46,9 +46,20 @@ internal class Program
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IMembersService, MembersService>();
-        builder.Services.AddScoped<IConcertService, ConcertService>();
-        builder.Services.AddScoped<IRehearsalService, RehearsalService>();
+        string? members_service_url = builder.Configuration["MEMBERS_SERVICE_URL"];
+        builder.Services.AddHttpClient<IMembersService, MembersService>(client => {
+            client.BaseAddress = new Uri($"{members_service_url}/member");
+        });
+        
+        string? planning_service_url = builder.Configuration["PLANNING_SERVICE_URL"];
+        builder.Services.AddHttpClient<IConcertsService, ConcertsService>(client => {
+            client.BaseAddress = new Uri($"{planning_service_url}/concert");
+        });
+        builder.Services.AddHttpClient<IRehearsalService, RehearsalService>(client => {
+            client.BaseAddress = new Uri($"{planning_service_url}/rehearsal");
+        });
+        
+        string? attendance_service_url = builder.Configuration["ATTENDANCE_SERVICE_URL"];
     }
 
     private static void ConfigureLogging(WebApplicationBuilder builder)
