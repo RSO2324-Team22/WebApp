@@ -15,7 +15,7 @@
     <a asp-action="New">Create New</a>
 </p>
 <div class="row">
-    <table class="table-striped">
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>Title</th>
@@ -26,6 +26,7 @@
             <th>Notes</th>
             <th>Status</th>
             <th>Type</th>
+            <th>Attendance</th>
         </tr>
         </thead>
 
@@ -40,6 +41,7 @@
                 <td>@rehearsal.Notes</td>
                 <td>@rehearsal.Status</td>
                 <td>@rehearsal.Type</td>
+                <td><a class="nav-link" asp-area="" asp-controller="RehearsalAttendance" asp-action="" asp-route-id="@rehearsal.Id">Attendance</a></td>
             </tr>
         }
         </tbody>

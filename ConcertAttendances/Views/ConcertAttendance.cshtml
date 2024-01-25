@@ -1,0 +1,48 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WebApp.ConcertAttendances.Models
+@model WebApp.ConcertAttendances.Models.ConcertAttendanceViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Rehearsals";
+}
+
+<h1>Attendance for concert @Model.ConcertTitle</h1>
+
+<p>
+    <a asp-action="New">Create New</a>
+</p>
+<div class="row">
+    <form method="POST" asp-action="Edit" asp-route-id="@Model.ConcertId">
+        <input type="hidden" asp-for="ConcertId" value="@Model.ConcertId" />
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Member</th>
+                <th>Is present</th>
+                <th>Reason for absence</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @for (int i = 0; i < @Model.Attendances.Count; i++) {
+                <tr>
+                    <td>
+                        <input type="hidden" asp-for="Attendances[i].Member.Id">
+                        @Model.Attendances[i].Member.Name
+                    </td>
+                    <td>
+                        <input asp-for="Attendances[i].IsPresent">                    
+                    </td>
+                    <td>
+                        <input asp-for="Attendances[i].ReasonForAbsence">                    
+                    </td>
+                </tr>
+            }
+                <button type="submit">Save</button>
+            </tbody>
+        </table>
+    </form>
+</div>

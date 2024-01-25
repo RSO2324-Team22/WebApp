@@ -12,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" method="POST">
+        <form asp-action="Edit" method="POST" asp-route-id="@Model.Id">
             <input type="hidden" asp-for="Id" value="@Model.Id" />
             <div class="form-group">
                 <label class="form-label" asp-for="Title">Title</label>

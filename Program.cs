@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Razor;
 using OpenTelemetry.Metrics;
 using Polly;
@@ -8,8 +6,10 @@ using Serilog;
 using Serilog.Events;
 using Serilog.HttpClient.Extensions;
 using WebApp;
+using WebApp.ConcertAttendances;
 using WebApp.Concerts;
 using WebApp.Members;
+using WebApp.RehearsalAttendances;
 using WebApp.Rehearsals;
 
 internal class Program
@@ -54,16 +54,18 @@ internal class Program
 
         IAsyncPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            .WaitAndRetryAsync(4, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
         IAsyncPolicy<HttpResponseMessage> circuitBreakerPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
-            .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+            .CircuitBreakerAsync(6, TimeSpan.FromSeconds(30));
+
+        TimeSpan minuteTimeSpan = new TimeSpan(0,1,0);
 
         string? members_service_url = builder.Configuration["MEMBERS_SERVICE_URL"];
         builder.Services.AddHttpClient<IMembersService, MembersService>(client => {
             client.BaseAddress = new Uri($"{members_service_url}/member");
-            client.Timeout = new TimeSpan(60);
+            client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
           .AddPolicyHandler(circuitBreakerPolicy)
@@ -72,7 +74,7 @@ internal class Program
         string? planning_service_url = builder.Configuration["PLANNING_SERVICE_URL"];
         builder.Services.AddHttpClient<IConcertsService, ConcertsService>(client => {
             client.BaseAddress = new Uri($"{planning_service_url}/concert");
-            client.Timeout = new TimeSpan(60);
+            client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
           .AddPolicyHandler(circuitBreakerPolicy)
@@ -80,13 +82,28 @@ internal class Program
 
         builder.Services.AddHttpClient<IRehearsalsService, RehearsalsService>(client => {
             client.BaseAddress = new Uri($"{planning_service_url}/rehearsal");
-            client.Timeout = new TimeSpan(60);
+            client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
           .AddPolicyHandler(circuitBreakerPolicy)
           .LogRequestResponse();
 
         string? attendance_service_url = builder.Configuration["ATTENDANCE_SERVICE_URL"];
+        builder.Services.AddHttpClient<IConcertAttendanceService, ConcertAttendanceService>(client => {
+            client.BaseAddress = new Uri($"{attendance_service_url}/concerts");
+            client.Timeout = minuteTimeSpan;
+        }).AddHeaderPropagation()
+          .AddPolicyHandler(retryPolicy)
+          .AddPolicyHandler(circuitBreakerPolicy)
+          .LogRequestResponse();
+
+        builder.Services.AddHttpClient<IRehearsalAttendanceService, RehearsalAttendanceService>(client => {
+            client.BaseAddress = new Uri($"{attendance_service_url}/rehearsals");
+            client.Timeout = minuteTimeSpan;
+        }).AddHeaderPropagation()
+          .AddPolicyHandler(retryPolicy)
+          .AddPolicyHandler(circuitBreakerPolicy)
+          .LogRequestResponse();
     }
 
     private static void ConfigureLogging(WebApplicationBuilder builder)

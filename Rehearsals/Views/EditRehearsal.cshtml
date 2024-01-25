@@ -1,3 +1,4 @@
+@using WebApp.Rehearsals
 @model WebApp.Rehearsals.Models.EditRehearsalViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
@@ -39,12 +40,26 @@
                 <input class="form-input" asp-for="Notes" value="@Model.Notes"/>
             </div>
             <div class="form-group">
-                <label class="form-label" asp-for="Status">Status</label>
-                <input class="form-input" asp-for="Status" value="@Model.Status"/>
+                <label class="form-label">Status</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalStatus.Proposed" />
+                <label>Proposed</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalStatus.InArrangement" />
+                <label>In arrangement</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalStatus.AwaitingApproval" />
+                <label>Avaiting approval</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalStatus.Confirmed" />
+                <label>Confirmed</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalStatus.Cancelled" />
+                <label>Cancelled</label><br/>
             </div>
             <div class="form-group">
-                <label class="form-label" asp-for="Type">Type</label>
-                <input class="form-input" asp-for="Type" value="@Model.Type"/>
+                <label class="form-label">Type</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalType.Regular" />
+                <label>Regular</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalType.Extra" />
+                <label>Extra</label><br/>
+                <input class="form-input" type="radio" asp-for="Status" value="@RehearsalType.Intensive" />
+                <label>Intensive</label><br/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary"/>

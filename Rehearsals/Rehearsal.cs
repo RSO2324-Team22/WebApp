@@ -5,9 +5,9 @@ namespace WebApp.Rehearsals;
 public class Rehearsal
 {
     public int Id { get; set; }
-    public required string Title { get; set; }
-    public required Location Location { get; set; }
-    public required DateTime StartTime { get; set; }
+    public string Title { get; set; } = "";
+    public Location Location { get; set; } = new Location();
+    public DateTime StartTime { get; set; } = default;
     public DateTime EndTime { get; set; }
     public string? Notes { get; set; }
     public RehearsalStatus Status { get; set; }

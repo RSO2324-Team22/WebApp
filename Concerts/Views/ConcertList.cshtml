@@ -27,6 +27,7 @@
             <th>Expected end time</th>
             <th>Notes</th>
             <th>Status</th>
+                <th/>
         </tr>
         </thead>
 
@@ -42,6 +43,7 @@
                 <td>@concert.ExpectedEndTime</td>
                 <td>@concert.Notes</td>
                 <td>@concert.Status</td>
+                <td><a class="nav-link" asp-area="" asp-controller="ConcertAttendance" asp-action="" asp-route-id="@concert.Id">Attendance</a></td>
             </tr>
         }
         </tbody>
