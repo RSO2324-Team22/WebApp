@@ -64,7 +64,7 @@ internal class Program
 
         string? members_service_url = builder.Configuration["MEMBERS_SERVICE_URL"];
         builder.Services.AddHttpClient<IMembersService, MembersService>(client => {
-            client.BaseAddress = new Uri($"{members_service_url}/member");
+            client.BaseAddress = new Uri($"{members_service_url}");
             client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
@@ -73,7 +73,7 @@ internal class Program
         
         string? planning_service_url = builder.Configuration["PLANNING_SERVICE_URL"];
         builder.Services.AddHttpClient<IConcertsService, ConcertsService>(client => {
-            client.BaseAddress = new Uri($"{planning_service_url}/concert");
+            client.BaseAddress = new Uri($"{planning_service_url}");
             client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
@@ -81,7 +81,7 @@ internal class Program
           .LogRequestResponse();
 
         builder.Services.AddHttpClient<IRehearsalsService, RehearsalsService>(client => {
-            client.BaseAddress = new Uri($"{planning_service_url}/rehearsal");
+            client.BaseAddress = new Uri($"{planning_service_url}");
             client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
@@ -90,7 +90,7 @@ internal class Program
 
         string? attendance_service_url = builder.Configuration["ATTENDANCE_SERVICE_URL"];
         builder.Services.AddHttpClient<IConcertAttendanceService, ConcertAttendanceService>(client => {
-            client.BaseAddress = new Uri($"{attendance_service_url}/concerts");
+            client.BaseAddress = new Uri($"{attendance_service_url}");
             client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
@@ -98,7 +98,7 @@ internal class Program
           .LogRequestResponse();
 
         builder.Services.AddHttpClient<IRehearsalAttendanceService, RehearsalAttendanceService>(client => {
-            client.BaseAddress = new Uri($"{attendance_service_url}/rehearsals");
+            client.BaseAddress = new Uri($"{attendance_service_url}");
             client.Timeout = minuteTimeSpan;
         }).AddHeaderPropagation()
           .AddPolicyHandler(retryPolicy)
